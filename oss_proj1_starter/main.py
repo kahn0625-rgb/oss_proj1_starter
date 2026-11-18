@@ -17,14 +17,23 @@ def load_high_score():
     """HIGHSCORE_FILE 에서 최고 점수를 읽어 돌려준다."""
     # TODO(F5): 파일에서 최고 점수를 읽어 int 로 반환할 것.
     #           파일이 없거나 내용이 숫자가 아니면 0 을 반환할 것.
+    if os.path.isfile(HIGHSCORE_FILE):  # ① 점수 파일이 있는지 확인
+        file = open(HIGHSCORE_FILE, "r")  # ② 파일을 읽기 모드로 열기
+        score = file.read().strip()      
+        file.close()   
+        
+        if score.isdecimal():           
+            return int(score)            
+
     return 0
 
 
 def save_high_score(score):
     """최고 점수를 HIGHSCORE_FILE 에 저장한다."""
     # TODO(F5): score 를 파일에 저장할 것. (다음 실행 때 load_high_score() 로 읽을 수 있게)
-    pass
-
+    pass file = open(HIGHSCORE_FILE, "w")
+    file.write(str(score))
+    file.close()
 
 class Game:
     def __init__(self):
