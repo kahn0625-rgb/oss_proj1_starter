@@ -31,8 +31,9 @@ def load_high_score():
 def save_high_score(score):
     """최고 점수를 HIGHSCORE_FILE 에 저장한다."""
     # TODO(F5): score 를 파일에 저장할 것. (다음 실행 때 load_high_score() 로 읽을 수 있게)
-    pass
-
+    pass file = open(HIGHSCORE_FILE, "w")
+    file.write(str(score))
+    file.close()
 
 class Game:
     def __init__(self):
