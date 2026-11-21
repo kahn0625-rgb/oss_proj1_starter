@@ -154,6 +154,10 @@ class Game:
 
         # TODO(F4): 생명이 0 이하가 되면 self.end_game() 을 실행할 것.
 
+    
+        if self.lives <= 0:
+            self.end_game()
+
     def end_game(self):
         """게임 오버 처리."""
         self.game_over = True
