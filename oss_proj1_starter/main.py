@@ -1,5 +1,6 @@
 """종스크롤 슈팅 게임. 실행: python main.py"""
 import sys
+import os
 
 import pygame
 
@@ -31,9 +32,8 @@ def load_high_score():
 def save_high_score(score):
     """최고 점수를 HIGHSCORE_FILE 에 저장한다."""
     # TODO(F5): score 를 파일에 저장할 것. (다음 실행 때 load_high_score() 로 읽을 수 있게)
-    pass file = open(HIGHSCORE_FILE, "w")
-    file.write(str(score))
-    file.close()
+    with open(HIGHSCORE_FILE, "w") as file:
+        file.write(str(score))
 
 class Game:
     def __init__(self):
@@ -71,40 +71,26 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+
             elif self.on_title:
-                self.handle_title_event(event)  # 시작 화면 입력은 여기서만 처리
+                self.handle_title_event(event)
+
             elif event.type == SPAWN_ENEMY and not self.game_over:
                 enemy = Enemy()
                 self.enemies.add(enemy)
                 self.all_sprites.add(enemy)
+
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
-
-             # TODO(F2): 스페이스 키를 누르면 self.player.shoot() 으로 총알을 만들어
-                    
-            elif event.key == pygame.K_SPACE and not self.game_over:
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and not self.game_over:
                     bullet = self.player.shoot()
                     self.bullets.add(bullet)
                     self.all_sprites.add(bullet)
-    
-               
-                #           self.bullets 와 self.all_sprites 두 그룹에 넣을 것. (게임 오버 중에는 쏘지 않게)
-
-
-       # TODO(F2): 스페이스 키를 누르면 self.player.shoot() 으로 총알을 만들어
-                    
-            elif event.key == pygame.K_SPACE and not self.game_over:
-                    bullet = self.player.shoot()
-                    self.bullets.add(bullet)
-                    self.all_sprites.add(bullet)
-
-        # TODO(F5): 게임 오버 상태에서 R 키를 누르면 self.reset() 으로 새 판을 시작할 것.
-        # TODO(F5): 게임 오버 상태에서 R 키를 누르면 self.reset() 으로 새 판을 시작할 것.
-
-            elif event.key == pygame.K_r and self.game_over:
+                elif event.key == pygame.K_r and self.game_over:
                     self.reset()
-
+    
+            
     def handle_title_event(self, event):
         """시작 화면의 입력: SPACE 면 새 판 시작, ESC 면 종료. (적 생성·발사 없음)"""
         if event.type == pygame.KEYDOWN:
@@ -162,9 +148,9 @@ class Game:
         """게임 오버 처리."""
         self.game_over = True
 
-            if self.score > self.high_score:
-                self.high_score = self.score
-                save_high_score(self.high_score) #밑의 문제 코드 추가
+        if self.score > self.high_score:
+            self.high_score = self.score
+            save_high_score(self.high_score) #밑의 문제 코드 추가
         # TODO(F5): 이번 점수가 최고 점수보다 높으면 self.high_score 를 바꾸고 save_high_score() 로 저장할 것.
 
     # ---------------- 그리기 ----------------
@@ -185,6 +171,8 @@ class Game:
         self.screen.blit(self.hud_shade, (0, 0))  # 점수·생명 글자 뒤 어두운 띠
         self.draw_text(f"LIVES: {self.lives}", self.font, WHITE, topright=(WIDTH - 10, 10))
         # TODO(F3): 화면 왼쪽 위에 현재 점수를 "SCORE: 120" 형태로 표시할 것.
+        cx = WIDTH // 2
+        cy = HEIGHT // 2
         self.draw_text(f"SCORE: {self.score}", self.font, WHITE, topleft=(10, 10))
         if self.game_over:
             self.draw_game_over()
@@ -203,11 +191,11 @@ class Game:
             self.draw_text("Press SPACE to start", self.font, YELLOW, center=(cx, 540))
 
     def draw_game_over(self):
-        """게임 오버 화면. self.game_over 가 True 일 때 draw() 가 부른다."""
-        # TODO(F4): 화면 가운데에 "GAME OVER" 와 이번 판 점수를 표시할 것.
+        cx = WIDTH // 2
+        cy = HEIGHT // 2
+
         self.draw_text("GAME OVER", self.big_font, RED, center=(cx, cy - 60))
         self.draw_text(f"SCORE: {self.score}", self.font, WHITE, center=(cx, cy))
-        # TODO(F5): 최고 점수("HIGH SCORE: 300")와 재시작 안내("Press R to restart")도 표시할 것.
         self.draw_text(f"HIGH SCORE: {self.high_score}", self.font, YELLOW, center=(cx, cy + 35))
         self.draw_text("Press R to restart", self.font, WHITE, center=(cx, cy + 80))
 
